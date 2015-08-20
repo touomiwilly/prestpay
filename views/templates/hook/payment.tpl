@@ -1,0 +1,1 @@
+{foreach from=$payment_methods key=name item=method}    <p class="payment_module">        <a href="{$method.url}" style="text-transform: none;">            <img src="{$method.img}"/>            {$method.readablename}        </a>    </p>{/foreach}
