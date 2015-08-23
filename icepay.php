@@ -21,17 +21,18 @@ class Icepay extends PaymentModule
 
     public function __construct()
     {
-        $this->name          = 'ICEPAY';
-        $this->tab           = 'payments_gateways';
-        $this->version       = '2.1.0';
-        $this->author        = 'ICEPAY';
-        $this->need_instance = 1;
-        $this->bootstrap     = true;
-        $this->controllers   = array('payment', 'validation');
+        $this->name                   = 'ICEPAY';
+        $this->tab                    = 'payments_gateways';
+        $this->version                = '2.1.0';
+        $this->author                 = 'ICEPAY';
+        $this->need_instance          = 1;
+        $this->bootstrap              = true;
+        $this->controllers            = array('payment', 'validation');
+        $this->ps_versions_compliancy = array('min' => '1.5', 'max' => '1.6');
 
         parent::__construct();
 
-        $this->displayName      = 'ICEPAY Payment Module';
+        $this->displayName      = $this->l('ICEPAY Payment Module');
         $this->description      = $this->l('ICEPAY Payment Module for PrestaShop');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
         $this->dbPmInfo         = _DB_PREFIX_ . 'icepay_pminfo';

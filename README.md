@@ -8,9 +8,9 @@ The master branche may not be stable. See the [release list](https://github.com/
 
 ## Requirements ##
 
-Type | Value
-------- | ------------------------
-PrestaShop | 1.5.0.17 - 1.6.1.0
+Type       | Value
+---------- | ------------------
+PrestaShop | 1.5.0.17 - 1.6.1.1
 
 ## Contributing ##
 
@@ -27,5 +27,5 @@ If you found a repeatable bug, and troubleshooting tips didn't help, then be sur
 ## Changelog ##
 
 Version      | Release date   | Changes
------------- | -------------- | ------------------------
-2.1.0        | 23/08/2015     | Compatiblity with PrestaShop 1.6.1.0.
+------------ | -------------- | -------------------------------------
+2.1.0        | 23/08/2015     | Compatiblity with PrestaShop 1.6.1.1.<br>Using Bootstrap on configuration page.
