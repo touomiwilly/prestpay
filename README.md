@@ -26,4 +26,6 @@ If you found a repeatable bug, and troubleshooting tips didn't help, then be sur
 
 ## Changelog ##
 
-No changes yet.
+Version      | Release date   | Changes
+------------ | -------------- | ------------------------
+2.1.0        | 23/08/2015     | Compatiblity with PrestaShop 1.6.1.0.
