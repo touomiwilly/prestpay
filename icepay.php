@@ -21,7 +21,7 @@ class Icepay extends PaymentModule
 
     public function __construct()
     {
-        $this->name                   = 'ICEPAY';
+        $this->name                   = 'icepay';
         $this->tab                    = 'payments_gateways';
         $this->version                = '2.1.0';
         $this->author                 = 'ICEPAY';
