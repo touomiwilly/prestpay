@@ -13,7 +13,7 @@ if (!defined('_PS_VERSION_'))
     die('No direct script access');
 }
 
-include_once(_PS_MODULE_DIR_ . 'icepay/api/api/icepay_api_webservice.php');
+include_once(_PS_MODULE_DIR_ . 'icepay/api/src/icepay_api_webservice.php');
 
 class Icepay extends PaymentModule
 {
