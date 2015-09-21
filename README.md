@@ -28,4 +28,5 @@ If you found a repeatable bug, and troubleshooting tips didn't help, then be sur
 
 Version      | Release date   | Changes
 ------------ | -------------- | -------------------------------------
+2.1.1        | 21/09/2015     | This emergency release disables SSL intermediate certificate checking to allow merchants on shared hosting providers to continue processing transactions while the hosting providers update their certificate store.
 2.1.0        | 23/08/2015     | Compatiblity with PrestaShop 1.6.1.1.<br>Using Bootstrap on configuration page.
