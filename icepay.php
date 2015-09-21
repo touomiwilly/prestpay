@@ -318,6 +318,11 @@ class Icepay extends PaymentModule
     {
         $xml = new SimpleXMLElement(@file_get_contents('https://github.com/icepay/Prestashop/releases.atom'));
 
+        if ($xml === FALSE)
+        {
+            return '';
+        }
+
         if (!empty($xml) && isset($xml->entry, $xml->entry[0], $xml->entry[0]->id))
         {
             if (!version_compare($this->version, preg_replace("/[^0-9,.]/", "", substr($xml->entry[0]->id, strrpos($xml->entry[0]->id, '/'))), '>='))
