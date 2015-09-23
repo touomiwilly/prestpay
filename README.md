@@ -10,7 +10,7 @@ The master branche may not be stable. See the [release list](https://github.com/
 
 Type       | Value
 ---------- | ------------------
-PrestaShop | 1.5.0.17 - 1.6.1.1
+PrestaShop | 1.6.0.0 - 1.6.1.1
 
 ### License
 
@@ -20,6 +20,7 @@ Our module is available under the BSD-2-Clause. See the [LICENSE](https://github
 
 Version      | Release date   | Changes
 ------------ | -------------- | -------------------------------------
+2.1.2        | 23/09/2015     | On some hosts, check for new updates results in a error.
 2.1.1        | 21/09/2015     | This emergency release disables SSL intermediate certificate checking to allow merchants on shared hosting providers to continue processing transactions while the hosting providers update their certificate store.
 2.1.0        | 23/08/2015     | Compatiblity with PrestaShop 1.6.1.1.<br>Using Bootstrap on configuration page.
 
