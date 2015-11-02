@@ -4,7 +4,7 @@
  * @package       ICEPAY Payment Module for Prestashop
  * @author        Ricardo Jacobs <ricardo.jacobs@icepay.com>
  * @copyright     (c) 2015 ICEPAY. All rights reserved.
- * @version       2.1.2, September 2015
+ * @version       2.2.0, September 2015
  * @license       BSD 2 License, see https://github.com/icepay/Prestashop/blob/master/LICENSE.md
  */
 
@@ -13,7 +13,7 @@ if (!defined('_PS_VERSION_'))
 	die('No direct script access');
 }
 
-include_once(_PS_MODULE_DIR_ . 'icepay/api/src/icepay_api_webservice.php');
+include_once(_PS_MODULE_DIR_ . 'icepay/restapi/src/Icepay/API/Autoloader.php');
 
 class Icepay extends PaymentModule
 {
@@ -23,7 +23,7 @@ class Icepay extends PaymentModule
 	{
 		$this->name                   = 'icepay';
 		$this->tab                    = 'payments_gateways';
-		$this->version                = '2.1.2';
+		$this->version                = '2.2.0';
 		$this->author                 = 'ICEPAY';
 		$this->need_instance          = 1;
 		$this->bootstrap              = true;
@@ -238,27 +238,28 @@ class Icepay extends PaymentModule
 			{
 				try
 				{
-					$service = Icepay_Api_Webservice::getInstance()->paymentMethodService();
-					$service->setMerchantID($this->merchantID)->setSecretCode($this->secretCode);
-
-					$paymentMethods = $service->retrieveAllPaymentMethods()->asArray();
+					$icepay = new \Icepay\API\Client();
+					$icepay->setApiSecret($this->secretCode);
+					$icepay->setApiKey($this->merchantID);
+					$icepay->setCompletedURL('http://example.com/payment.php');
+					$icepay->setErrorURL('http://example.com/payment.php');
+					$paymentMethods = $icepay->payment->getMyPaymentMethods();
 					Db::getInstance()->delete($this->dbPmInfo, "shop_id = {$activeShopID}", 0, true, false);
-
-					foreach ($paymentMethods as $paymentMethod)
+					foreach ($paymentMethods->PaymentMethods as $paymentMethod)
 					{
 						$data = array
 						(
 							'shop_id'      => $activeShopID,
-							'displayname'  => $paymentMethod['Description'],
-							'readablename' => $paymentMethod['Description'],
-							'pm_code'      => $paymentMethod['PaymentMethodCode']
+							'displayname'  => $paymentMethod->Description,
+							'readablename' => $paymentMethod->Description,
+							'pm_code'      => $paymentMethod->PaymentMethodCode
 						);
 
 						Db::getInstance()->insert($this->dbPmInfo, $data, false, false, Db::INSERT, false);
 					}
 
 					Db::getInstance()->delete($this->dbRawData, "shop_id = {$activeShopID}", 0, true, false);
-					Db::getInstance()->insert($this->dbRawData, array('shop_id' => $activeShopID, 'raw_pm_data' => serialize($paymentMethods)), false, false, Db::INSERT, false);
+					Db::getInstance()->insert($this->dbRawData, array('shop_id' => $activeShopID, 'raw_pm_data' => serialize($paymentMethods->PaymentMethods)), false, false, Db::INSERT, false);
 
 				}
 				catch (Exception $e)
@@ -285,7 +286,7 @@ class Icepay extends PaymentModule
 			'icepay_update'       => $this->_getGitHubReleases(),
 			'soapEnabled'         => $this->soapEnabled,
 			'version'             => $this->version,
-			'api_version'         => Icepay_Project_Helper::getInstance()->getReleaseVersion(),
+			'api_version'         => \Icepay\API\Client::getInstance()->getReleaseVersion(),
 			'img_icepay'          => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . "modules/{$this->name}/images/icepay-logo.png",
 			'icepay_notify_url'   => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . "index.php?fc=module&module={$this->name}&controller=validate",
 			'icepay_postback_url' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . "modules/icepay/validate.php"
@@ -305,7 +306,7 @@ class Icepay extends PaymentModule
 			$this->_errors['SoapERR'] = $this->l('SoapClient must be enabled in your PHP environment in order to use the ICEPAY module.');
 		}
 
-		if (!Icepay_Parameter_Validation::merchantID($this->merchantID) || !Icepay_Parameter_Validation::secretCode($this->secretCode))
+		if (!\Icepay\API\Icepay_Parameter_Validation::merchantID($this->merchantID) || !\Icepay\API\Icepay_Parameter_Validation::secretCode($this->secretCode))
 		{
 			$this->_errors['merchantERR'] = $this->l('To configurate payment methods we need to know the mentatory fields in the configuration above');
 		}
