@@ -204,7 +204,10 @@ class Icepay extends PaymentModule
 
 		if (isset($_POST['ic_updateSettings']))
 		{
+			$x = Tools::getValue('testPrefix');
+			$value = (!empty($x)) ? 'ON' : '';
 			Configuration::updateValue('ICEPAY_MERCHANTID', Tools::getValue('merchantID'));
+			Configuration::updateValue('ICEPAY_TESTPREFIX', $value);
 			Configuration::updateValue('ICEPAY_SECRETCODE', Tools::getValue('secretCode'));
 			Configuration::updateValue('ICEPAY_DESCRIPTION', Tools::getValue('cDescription'));
 
@@ -275,6 +278,7 @@ class Icepay extends PaymentModule
 		(
 			'errors'              => $this->_errors,
 			'post_url'            => Tools::htmlentitiesUTF8($_SERVER['REQUEST_URI']),
+			'data_testprefix'     => $this->testPrefix,
 			'data_merchantid'     => $this->merchantID,
 			'data_secretcode'     => $this->secretCode,
 			'data_description'    => $this->cDescription ? $this->cDescription : $_SERVER['SERVER_NAME'],
@@ -310,6 +314,7 @@ class Icepay extends PaymentModule
 	private function setModuleSettings()
 	{
 		$this->merchantID   = Configuration::get('ICEPAY_MERCHANTID');
+		$this->testPrefix   = Configuration::get('ICEPAY_TESTPREFIX');
 		$this->secretCode   = Configuration::get('ICEPAY_SECRETCODE');
 		$this->cDescription = Configuration::get('ICEPAY_DESCRIPTION');
 	}
