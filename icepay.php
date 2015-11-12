@@ -166,7 +166,7 @@ class Icepay extends PaymentModule
 		$currency = Currency::getCurrency($cart->id_currency);
 		$storedPaymentMethod = Db::getInstance()->executeS("SELECT raw_pm_data FROM `{$this->dbRawData}` WHERE `shop_id` = $activeShopID");
 
-		$filter = Icepay_Api_Webservice::getInstance()->filtering();
+		$filter = new Icepay_Webservice_Filtering();
 		$filter->loadFromArray(unserialize($storedPaymentMethod[0]['raw_pm_data']));
 		$filter->filterByCurrency($currency['iso_code'])->filterByCountry($this->context->country->iso_code)->filterByAmount($cart->getOrderTotal(true, Cart::BOTH) * 100);
 
@@ -175,7 +175,7 @@ class Icepay extends PaymentModule
 
 		foreach ($paymentMethodsFiltered as $paymentMethod)
 		{
-			$paymentMethod = Db::getInstance()->executeS("SELECT active, displayname, pm_code FROM `{$this->dbPmInfo}` WHERE pm_code = '{$paymentMethod['PaymentMethodCode']}' AND `shop_id` = {$activeShopID}");
+			$paymentMethod = Db::getInstance()->executeS("SELECT active, displayname, pm_code FROM `{$this->dbPmInfo}` WHERE pm_code = '{$paymentMethod->PaymentMethodCode}' AND `shop_id` = {$activeShopID}");
 
 			if ($paymentMethod[0]['active'] == '1')
 			{
@@ -241,8 +241,8 @@ class Icepay extends PaymentModule
 					$icepay = new \Icepay\API\Client();
 					$icepay->setApiSecret($this->secretCode);
 					$icepay->setApiKey($this->merchantID);
-					$icepay->setCompletedURL('http://example.com/payment.php');
-					$icepay->setErrorURL('http://example.com/payment.php');
+					$icepay->setCompletedURL('...');
+					$icepay->setErrorURL('...');
 					$paymentMethods = $icepay->payment->getMyPaymentMethods();
 					Db::getInstance()->delete($this->dbPmInfo, "shop_id = {$activeShopID}", 0, true, false);
 					foreach ($paymentMethods->PaymentMethods as $paymentMethod)

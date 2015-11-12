@@ -21,7 +21,7 @@
                 {if $issuerList|@count > 1}
                     <select name="pmIssuer" style="padding: 5px; width: 150px;">
                         {foreach from=$issuerList key=name item=method}
-                            <option value="{l s={$method.IssuerKeyword} mod='icepay'}">{$method.Description}</option>
+                            <option value="{l s={$method->IssuerKeyword} mod='icepay'}">{$method->Description}</option>
                         {/foreach}
                     </select>
                 {else}

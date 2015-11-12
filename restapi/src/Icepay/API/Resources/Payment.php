@@ -29,7 +29,7 @@ class Payment extends BaseApi
             'Issuer' => $data['Issuer'],
             'Language' => $data['Language'],
             'OrderID' => $data['OrderID'],
-            'PaymentMethod' => $data['Paymentmethod'],
+            'PaymentMethod' => $data['PaymentMethod'],
             'Reference' => $data['Reference'],
             'URLCompleted' => $this->client->api_completed_url,
             'URLError' => $this->client->api_error_url,
