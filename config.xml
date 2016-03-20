@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
-	<name>ICEPAY</name>
+	<name>icepay</name>
 	<displayName><![CDATA[ICEPAY Payment Module]]></displayName>
 	<version><![CDATA[2.2.0]]></version>
 	<description><![CDATA[ICEPAY Payment Module for PrestaShop]]></description>

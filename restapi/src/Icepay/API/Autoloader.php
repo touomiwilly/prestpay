@@ -21,6 +21,7 @@ require_once("Icepay_Webservice_Base.php");
 require_once("Icepay_Webservice_Pay.php");
 require_once("Icepay_PaymentObject.php");
 require_once("Icepay_Result.php");
+require_once("Icepay_Postback.php");
 require_once("Client.php");
 require_once("Resources/BaseApi.php");
 require_once("Resources/Payment.php");
