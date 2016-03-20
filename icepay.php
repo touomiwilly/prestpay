@@ -37,7 +37,6 @@ class Icepay extends PaymentModule
 		$this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
 		$this->dbPmInfo         = _DB_PREFIX_ . 'icepay_pminfo';
 		$this->dbRawData        = _DB_PREFIX_ . 'icepay_rawdata';
-		$this->soapEnabled      = (class_exists('SoapClient')) ? true : false;
 
 		$this->setModuleSettings();
 		$this->checkModuleRequirements();
@@ -284,7 +283,6 @@ class Icepay extends PaymentModule
 			'data_secretcode'     => $this->secretCode,
 			'data_description'    => $this->cDescription ? $this->cDescription : $_SERVER['SERVER_NAME'],
 			'icepay_update'       => $this->_getGitHubReleases(),
-			'soapEnabled'         => $this->soapEnabled,
 			'version'             => $this->version,
 			'api_version'         => \Icepay\API\Client::getInstance()->getReleaseVersion(),
 			'img_icepay'          => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . "modules/{$this->name}/images/icepay-logo.png",
@@ -300,11 +298,6 @@ class Icepay extends PaymentModule
 	private function checkModuleRequirements()
 	{
 		$this->_errors = array();
-
-		if (!$this->soapEnabled)
-		{
-			$this->_errors['SoapERR'] = $this->l('SoapClient must be enabled in your PHP environment in order to use the ICEPAY module.');
-		}
 
 		if (!\Icepay\API\Icepay_Parameter_Validation::merchantID($this->merchantID) || !\Icepay\API\Icepay_Parameter_Validation::secretCode($this->secretCode))
 		{
