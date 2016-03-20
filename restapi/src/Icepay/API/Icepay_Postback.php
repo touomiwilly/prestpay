@@ -157,7 +157,7 @@ class Icepay_Postback extends Icepay_Api_Base {
             $this->_logger->log("Invalid request method", Icepay_Api_Logger::ERROR);
             return false;
         };
-
+		
         $this->_logger->log(sprintf("Postback: %s", serialize($_POST)), Icepay_Api_Logger::TRANSACTION);
 
         /* @since version 1.0.2 */
