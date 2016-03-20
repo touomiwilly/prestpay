@@ -238,14 +238,17 @@ class Icepay_Webservice_Pay extends Icepay_Webservice_Base {
         $result = $this->client->payment->Checkout((Array)$obj);
 
         /* store the checksum momentarily */
-        $checksum = $result->Checksum;
-
+		if (!isset($result->Checksum)) {
+			throw new Exception("Error creating the order");
+		}
+		$checksum = $result->Checksum;
+		
         /* Replace the checksum in the data with secretCode to generate a new checksum */
         $result->Checksum = $this->getSecretCode();
 
         /* Verify response data */
         if ($checksum != $this->generateChecksum($result)) {
-            //var_dump($checksum, $this->generateChecksum($result));
+			//TODO: validate checkcsum
             //throw new Exception("Data could not be verified");
         }
 
