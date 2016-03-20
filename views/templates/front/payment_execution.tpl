@@ -25,7 +25,7 @@
                         {/foreach}
                     </select>
                 {else}
-                    <input type="hidden" name="pmIssuer" value="{l s={$issuerList.0.IssuerKeyword} mod='icepay'}" /> 
+                    <input type="hidden" name="pmIssuer" value="{l s={$issuerList.0->IssuerKeyword} mod='icepay'}" /> 
                 {/if}   
             </div>
             <input type="submit" name="submit" id="makePayment" value="{l s='I confirm my order' mod='icepay'}" class="exclusive_large" style="margin-top: 20px;"/>
