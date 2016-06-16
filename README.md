@@ -20,10 +20,8 @@ Our module is available under the BSD-2-Clause. See the [LICENSE](https://github
 
 Version      | Release date   | Changes
 ------------ | -------------- | -------------------------------------
-2.2.0        | 23/09/2015     | Moved to Rest API.
-2.1.2        | 23/09/2015     | On some hosts, check for new updates results in a error.
-2.1.1        | 21/09/2015     | This emergency release disables SSL intermediate certificate checking to allow merchants on shared hosting providers to continue processing transactions while the hosting providers update their certificate store.
-2.1.0        | 23/08/2015     | Compatiblity with PrestaShop 1.6.1.1.<br>Using Bootstrap on configuration page.
+2.2.0        | 15/06/2016     | Moved to Rest API.
+
 
 ### Contributing
 
