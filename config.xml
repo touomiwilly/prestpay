@@ -4,7 +4,7 @@
 	<displayName><![CDATA[ICEPAY Payment Module]]></displayName>
 	<version><![CDATA[2.2.0]]></version>
 	<description><![CDATA[ICEPAY Payment Module for PrestaShop]]></description>
-	<author><![CDATA[ICEPAY]]></author>
+	<author><![CDATA[ICEPAY B.V.]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
 	<confirmUninstall><![CDATA[Are you sure you want to uninstall?]]></confirmUninstall>
 	<is_configurable>1</is_configurable>

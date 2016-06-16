@@ -10,6 +10,7 @@
 
     const OPEN = "OPEN";
     const AUTHORIZED = "AUTHORIZED";
+    const VALIDATE = "VALIDATE";
     const ERROR = "ERR";
     const SUCCESS = "OK";
     const REFUND = "REFUND";

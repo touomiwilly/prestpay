@@ -228,10 +228,11 @@ class Icepay_Postback extends Icepay_Api_Base {
         }
 
         switch ($this->data->status) {
-            case Icepay_StatusCode::SUCCESS: return ($currentStatus == Icepay_StatusCode::ERROR || $currentStatus == Icepay_StatusCode::AUTHORIZED || $currentStatus == Icepay_StatusCode::OPEN);
+            case Icepay_StatusCode::SUCCESS: return ($currentStatus == Icepay_StatusCode::OPEN || $currentStatus == Icepay_StatusCode::AUTHORIZED || $currentStatus == Icepay_StatusCode::VALIDATE);
             case Icepay_StatusCode::OPEN: return ($currentStatus == Icepay_StatusCode::OPEN);
             case Icepay_StatusCode::AUTHORIZED: return ($currentStatus == Icepay_StatusCode::OPEN);
-            case Icepay_StatusCode::ERROR: return ($currentStatus == Icepay_StatusCode::OPEN || $currentStatus == Icepay_StatusCode::AUTHORIZED);
+            case Icepay_StatusCode::VALIDATE: return ($currentStatus == Icepay_StatusCode::OPEN);
+            case Icepay_StatusCode::ERROR: return ($currentStatus == Icepay_StatusCode::OPEN || $currentStatus == Icepay_StatusCode::AUTHORIZED || $currentStatus == Icepay_StatusCode::VALIDATE);
             case Icepay_StatusCode::CHARGEBACK: return ($currentStatus == Icepay_StatusCode::SUCCESS);
             case Icepay_StatusCode::REFUND: return ($currentStatus == Icepay_StatusCode::SUCCESS);
             default:

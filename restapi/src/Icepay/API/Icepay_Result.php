@@ -101,4 +101,31 @@
         return $this->data;
     }
 
+
+     /**
+      * Check between ICEPAY statuscodes whether the status can be updated.
+      * @since version 1.0.0
+      * @access public
+      * @param string $currentStatus The ICEPAY statuscode of the order before a statuschange
+      * @return boolean
+      */
+     public function canUpdateStatus($currentStatus)
+     {
+         if (!isset($this->data->status)) {
+             $this->_logger->log("Status not set", Icepay_Api_Logger::ERROR);
+             return false;
+         }
+
+         switch ($this->data->status) {
+             case Icepay_StatusCode::SUCCESS: return ($currentStatus == Icepay_StatusCode::OPEN || $currentStatus == Icepay_StatusCode::AUTHORIZED || $currentStatus == Icepay_StatusCode::VALIDATE);
+             case Icepay_StatusCode::OPEN: return ($currentStatus == Icepay_StatusCode::OPEN);
+             case Icepay_StatusCode::AUTHORIZED: return ($currentStatus == Icepay_StatusCode::OPEN);
+             case Icepay_StatusCode::VALIDATE: return ($currentStatus == Icepay_StatusCode::OPEN);
+             case Icepay_StatusCode::ERROR: return ($currentStatus == Icepay_StatusCode::OPEN || $currentStatus == Icepay_StatusCode::AUTHORIZED || $currentStatus == Icepay_StatusCode::VALIDATE);
+             case Icepay_StatusCode::CHARGEBACK: return ($currentStatus == Icepay_StatusCode::SUCCESS);
+             case Icepay_StatusCode::REFUND: return ($currentStatus == Icepay_StatusCode::SUCCESS);
+             default:
+                 return false;
+         };
+     }
 }

@@ -13,21 +13,25 @@ if (!defined('_PS_VERSION_'))
 	die('No direct script access');
 }
 
-include_once(_PS_MODULE_DIR_ . 'icepay/restapi/src/Icepay/API/Autoloader.php');
+require_once(dirname(__FILE__).'/classes/IcepayPaymentMethod.php');
+require_once(dirname(__FILE__).'/restapi/src/Icepay/API/Autoloader.php');
+
 
 class Icepay extends PaymentModule
 {
 	protected $_errors = array();
+
+//	protected $validationUrl;
 
 	public function __construct()
 	{
 		$this->name                   = 'icepay';
 		$this->tab                    = 'payments_gateways';
 		$this->version                = '2.2.0';
-		$this->author                 = 'ICEPAY';
+		$this->author                 = 'ICEPAY B.V.';
 		$this->need_instance          = 1;
 		$this->bootstrap              = true;
-		$this->controllers            = array('payment', 'validation');
+	//	$this->controllers            = array('payment', 'validation');
 		$this->ps_versions_compliancy = array('min' => '1.5', 'max' => '1.6');
 
 		parent::__construct();
@@ -38,270 +42,237 @@ class Icepay extends PaymentModule
 		$this->dbPmInfo         = _DB_PREFIX_ . 'icepay_pminfo';
 		$this->dbRawData        = _DB_PREFIX_ . 'icepay_rawdata';
 
+		$this->thankYouPageUrl = Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . '?fc=module&module=icepay&controller=paymentreturn';
+		$this->errorPageUrl = Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . '?fc=module&module=icepay&controller=paymentreturn';
+		$this->validationUrl = Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . '?fc=module&module=icepay&controller=postback';
+
 		$this->setModuleSettings();
 		$this->checkModuleRequirements();
 	}
 
+
+
+
 	public function install()
 	{
-		if (!parent::install() OR !$this->registerHook('payment') OR !$this->registerHook('paymentReturn'))
-		{
+		// Call install parent method
+		if (!parent::install())
 			return false;
-		}
 
-		$this->addOrderStates();
+		// Register hooks
+		if (!$this->registerHook('payment') ||
+			!$this->registerHook('paymentReturn'))
+			return false;
 
+		//Install required missing states
+		if (!$this->installIcepayOpenOrderState())
+			return false;
+
+		if (!$this->installIcepayAuthOrderState())
+			return false;
+
+		// Install admin tab
+		if (!$this->installTab('AdminPayment', 'AdminIcepay', 'ICEPAY'))
+			return false;
+
+		//Create table for ICEPAY payment method configuration
 		Db::getInstance()->execute("CREATE TABLE {$this->dbPmInfo} (
-			id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-			shop_id INT NOT NULL,
+			id_icepay_pminfo INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+			id_shop INT NOT NULL,
 			active INT DEFAULT 0,
 			displayname VARCHAR(100), 
 			readablename VARCHAR(100),
-			pm_code VARCHAR(25)
+			pm_code VARCHAR(25),
+			position TINYINT(1)
 		)");
 
+		//Create raw data storage
 		Db::getInstance()->execute("CREATE TABLE {$this->dbRawData} (    
-			shop_id INT NOT NULL,
+			id_shop INT NOT NULL,
 			raw_pm_data MEDIUMTEXT
 		)");
 
 		return true;
 	}
 
+
 	public function uninstall()
 	{
+		// Call uninstall parent method
 		if (!parent::uninstall())
-		{
 			return false;
-		}
 
+		// Uninstall admin tab
+		if (!$this->uninstallTab('AdminIcepay'))
+			return false;
+
+		//Drop tables
 		Db::getInstance()->execute("DROP TABLE if exists {$this->dbPmInfo}");
 		Db::getInstance()->execute("DROP TABLE if exists {$this->dbRawData}");
+
+		$this->deleteModuleSettings();
 
 		return true;
 	}
 
-	private function addOrderStates()
+	public function getHookController($hook_name)
 	{
-		if (!(Configuration::get('PS_OS_ICEPAY_OPEN') > 0))
-		{
-			$OrderState              = new OrderState(null, Configuration::get('PS_LANG_DEFAULT'));
-			$OrderState->name        = "Awaiting payment";
-			$OrderState->invoice     = false;
-			$OrderState->send_email  = true;
-			$OrderState->module_name = $this->name;
-			$OrderState->color       = "RoyalBlue";
-			$OrderState->unremovable = true;
-			$OrderState->hidden      = false;
-			$OrderState->logable     = false;
-			$OrderState->delivery    = false;
-			$OrderState->shipped     = false;
-			$OrderState->paid        = false;
-			$OrderState->deleted     = false;
-			$OrderState->template    = "order_changed";
-			$OrderState->add();
+		// Include the controller file
+		require_once(dirname(__FILE__).'/controllers/hook/'. $hook_name.'.php');
 
-			Configuration::updateValue("PS_OS_ICEPAY_OPEN", $OrderState->id);
+		// Build dynamically the controller name
+		$controller_name = $this->name.$hook_name.'Controller';
 
-			if (file_exists(dirname(dirname(dirname(__file__))) . '/img/os/10.gif'))
-			{
-				copy(dirname(dirname(dirname(__file__))) . '/img/os/10.gif', dirname(dirname(dirname(__file__))) . '/img/os/' . $OrderState->id . '.gif');
-			}
-		}
+		// Instantiate controller
+		$controller = new $controller_name($this, __FILE__, $this->_path);
 
-		if (!(Configuration::get('PS_OS_ICEPAY_AUTH') > 0))
-		{
-			$OrderState              = new OrderState(null, Configuration::get('PS_LANG_DEFAULT'));
-			$OrderState->name        = "Payment Authorized";
-			$OrderState->invoice     = false;
-			$OrderState->send_email  = true;
-			$OrderState->module_name = $this->name;
-			$OrderState->color       = "RoyalBlue";
-			$OrderState->unremovable = true;
-			$OrderState->hidden      = false;
-			$OrderState->logable     = false;
-			$OrderState->delivery    = false;
-			$OrderState->shipped     = false;
-			$OrderState->paid        = false;
-			$OrderState->deleted     = false;
-			$OrderState->template    = "order_changed";
-			$OrderState->add();
-
-			Configuration::updateValue("PS_OS_ICEPAY_AUTH", $OrderState->id);
-
-			if (file_exists(dirname(dirname(dirname(__file__))) . '/img/os/10.gif'))
-			{
-				copy(dirname(dirname(dirname(__file__))) . '/img/os/10.gif', dirname(dirname(dirname(__file__))) . '/img/os/' . $OrderState->id . '.gif');
-			}
-		}
+		// Return the controller
+		return $controller;
 	}
 
-	public function hookPaymentReturn($params)
+	public function hookDisplayPayment($params)
 	{
-		if (!$this->active)
-		{
-			return;
-		}
-		global $smarty;
-
-		$smarty->assign(array('status' => Tools::getValue('status', 'OPEN')));
-
-		return $this->display(__FILE__, 'confirmation.tpl');
+		$controller = $this->getHookController('displayPayment');
+		return $controller->run($params);
 	}
 
-	public function hookPayment($params)
+	public function hookDisplayPaymentReturn($params)
 	{
-		if (!$this->active)
-		{
-			return;
-		}
-
-		global $smarty;
-
-		$link = new Link();
-
-		$activeShopID = (int)Context::getContext()->shop->id;
-		$cart = $this->context->cart;
-		$currency = Currency::getCurrency($cart->id_currency);
-		$storedPaymentMethod = Db::getInstance()->executeS("SELECT raw_pm_data FROM `{$this->dbRawData}` WHERE `shop_id` = $activeShopID");
-
-		$filter = new Icepay_Webservice_Filtering();
-		$filter->loadFromArray(unserialize($storedPaymentMethod[0]['raw_pm_data']));
-		$filter->filterByCurrency($currency['iso_code'])->filterByCountry($this->context->country->iso_code)->filterByAmount($cart->getOrderTotal(true, Cart::BOTH) * 100);
-
-		$paymentMethodsFiltered = $filter->getFilteredPaymentmethods();
-		$paymentMethods = array();
-
-		foreach ($paymentMethodsFiltered as $paymentMethod)
-		{
-			$paymentMethod = Db::getInstance()->executeS("SELECT active, displayname, pm_code FROM `{$this->dbPmInfo}` WHERE pm_code = '{$paymentMethod->PaymentMethodCode}' AND `shop_id` = {$activeShopID}");
-
-			if ($paymentMethod[0]['active'] == '1')
-			{
-				$paymentMethods[] = array
-				(
-					'url'          => $link->getModuleLink('icepay', 'payment', array('method' => $paymentMethod[0]['pm_code'])),
-					'img'          => __PS_BASE_URI__ . 'modules/' . $this->name . '/images/paymentmethods/' . strtolower($paymentMethod[0]['pm_code']) . '.png',
-					'readablename' => $paymentMethod[0]['displayname']
-				);
-			}
-		}
-
-		$smarty->assign(array
-		(
-			'this_path'       => $this->_path,
-			'this_path_ssl'   => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . 'modules/' . $this->name . '/',
-			'payment_methods' => $paymentMethods
-		));
-
-		return $this->display(__FILE__, 'views/templates/hook/payment.tpl');
+		$controller = $this->getHookController('displayPaymentReturn');
+		return $controller->run($params);
 	}
 
 	public function getContent()
 	{
-		$activeShopID = (int)Context::getContext()->shop->id;
-
-		if (isset($_POST['ic_updateSettings']))
-		{
-			$x = Tools::getValue('testPrefix');
-			$value = (!empty($x)) ? 'ON' : '';
-			Configuration::updateValue('ICEPAY_MERCHANTID', Tools::getValue('merchantID'));
-			Configuration::updateValue('ICEPAY_TESTPREFIX', $value);
-			Configuration::updateValue('ICEPAY_SECRETCODE', Tools::getValue('secretCode'));
-			Configuration::updateValue('ICEPAY_DESCRIPTION', Tools::getValue('cDescription'));
-
-			$this->setModuleSettings();
-			$this->checkModuleRequirements();
+		if (!Tools::getValue('ajax')) {
+			$controller = $this->getHookController('getContent');
+			return $controller->run();
 		}
+	}
 
-		if (isset($_POST['ic_savePaymentMethods']))
+
+	private function installTab($parent, $class_name, $name)
+	{
+		// Create new admin tab
+		$tab = new Tab();
+		$tab->id_parent = (int)Tab::getIdFromClassName($parent);
+		$tab->name = array();
+		foreach (Language::getLanguages(true) as $lang)
+			$tab->name[$lang['id_lang']] = $name;
+		$tab->class_name = $class_name;
+		$tab->module = $this->name;
+		$tab->active = 1;
+		return $tab->add();
+	}
+
+	private function uninstallTab($class_name)
+	{
+		// Retrieve Tab ID
+		$id_tab = (int)Tab::getIdFromClassName($class_name);
+
+		// Load tab
+		$tab = new Tab((int)$id_tab);
+
+		// Delete it
+		return $tab->delete();
+	}
+
+
+	private function installIcepayOpenOrderState()
+	{
+		if (Configuration::get('PS_OS_ICEPAY_OPEN') < 1)
 		{
-			$paymentMethodActiveStates = Tools::getValue('paymentMethodActive');
+			$order_state              = new OrderState(null, Configuration::get('PS_LANG_DEFAULT'));
+			$order_state->name        = "Awaiting payment";
+			$order_state->invoice     = false;
+			$order_state->send_email  = true;
+			$order_state->module_name = $this->name;
+			$order_state->color       = "RoyalBlue";
+			$order_state->unremovable = true;
+			$order_state->hidden      = false;
+			$order_state->logable     = false;
+			$order_state->delivery    = false;
+			$order_state->shipped     = false;
+			$order_state->paid        = false;
+			$order_state->deleted     = false;
+			$order_state->template    = "order_changed";
 
-			foreach (Tools::getValue('paymentMethodDisplayName') as $key => $displayName)
+			if ($order_state->add())
 			{
-				$data = array
-				(
-					'shop_id'     => (int)Context::getContext()->shop->id,
-					'active'      => isset($paymentMethodActiveStates[$key]) ? '1' : '0',
-					'displayname' => $displayName
-				);
+				// We save the order State ID in Configuration database
+				Configuration::updateValue("PS_OS_ICEPAY_OPEN", $order_state->id);
 
-				Db::getInstance()->update($this->dbPmInfo, $data, "id = {$key}", 0, false, true, false);
-			}
-		}
-
-		if (isset($_POST['ic_getMyPaymentMethods']))
-		{
-			if (isset($this->merchantID) && isset($this->secretCode))
-			{
-				try
+				// We copy the module logo in order state logo directory
+				if (file_exists(dirname(dirname(dirname(__file__))) . '/img/os/10.gif')) //TODO
 				{
-					$icepay = new \Icepay\API\Client();
-					$icepay->setApiSecret($this->secretCode);
-					$icepay->setApiKey($this->merchantID);
-					$icepay->setCompletedURL('...');
-					$icepay->setErrorURL('...');
-					$paymentMethods = $icepay->payment->getMyPaymentMethods();
-					Db::getInstance()->delete($this->dbPmInfo, "shop_id = {$activeShopID}", 0, true, false);
-					foreach ($paymentMethods->PaymentMethods as $paymentMethod)
-					{
-						$data = array
-						(
-							'shop_id'      => $activeShopID,
-							'displayname'  => $paymentMethod->Description,
-							'readablename' => $paymentMethod->Description,
-							'pm_code'      => $paymentMethod->PaymentMethodCode
-						);
-
-						Db::getInstance()->insert($this->dbPmInfo, $data, false, false, Db::INSERT, false);
-					}
-
-					Db::getInstance()->delete($this->dbRawData, "shop_id = {$activeShopID}", 0, true, false);
-					Db::getInstance()->insert($this->dbRawData, array('shop_id' => $activeShopID, 'raw_pm_data' => serialize($paymentMethods->PaymentMethods)), false, false, Db::INSERT, false);
-
-				}
-				catch (Exception $e)
-				{
-					$this->_errors['SoapERR'] = "{$e->getMessage()}.";
+					copy(dirname(dirname(dirname(__file__))) . '/img/os/10.gif', dirname(dirname(dirname(__file__))) . '/img/os/' . $order_state->id . '.gif');
 				}
 			}
 			else
-			{
-				$this->_errors['SoapERR'] = $this->l('You must first setup your Merchant ID and Secret Code.');
-			}
+				return false;
 		}
-
-		$this->context->smarty->assign('paymentMethodData', Db::getInstance()->executeS("SELECT id, active, displayname, readablename, pm_code FROM `{$this->dbPmInfo}` WHERE `shop_id` = {$activeShopID}"));
-
-		$data = array
-		(
-			'errors'              => $this->_errors,
-			'post_url'            => Tools::htmlentitiesUTF8($_SERVER['REQUEST_URI']),
-			'data_testprefix'     => $this->testPrefix,
-			'data_merchantid'     => $this->merchantID,
-			'data_secretcode'     => $this->secretCode,
-			'data_description'    => $this->cDescription ? $this->cDescription : $_SERVER['SERVER_NAME'],
-			'icepay_update'       => $this->_getGitHubReleases(),
-			'version'             => $this->version,
-			'api_version'         => \Icepay\API\Client::getInstance()->getReleaseVersion(),
-			'img_icepay'          => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . "modules/{$this->name}/images/icepay-logo.png",
-			'icepay_notify_url'   => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . "index.php?fc=module&module={$this->name}&controller=validate",
-			'icepay_postback_url' => Tools::getShopDomainSsl(true, true) . __PS_BASE_URI__ . "modules/icepay/validate.php"
-		);
-
-		$this->context->smarty->assign($data);
-
-		return $this->display($this->name, 'views/templates/admin/config.tpl');
+		return true;
 	}
+
+	private function installIcepayAuthOrderState()
+	{
+		if (Configuration::get('PS_OS_ICEPAY_AUTH') < 1)
+		{
+			$order_state              = new OrderState(null, Configuration::get('PS_LANG_DEFAULT'));
+			$order_state->name        = "Payment Authorized";
+			$order_state->invoice     = false;
+			$order_state->send_email  = true;
+			$order_state->module_name = $this->name;
+			$order_state->color       = "RoyalBlue";
+			$order_state->unremovable = true;
+			$order_state->hidden      = false;
+			$order_state->logable     = false;
+			$order_state->delivery    = false;
+			$order_state->shipped     = false;
+			$order_state->paid        = false;
+			$order_state->deleted     = false;
+			$order_state->template    = "order_changed";
+
+			if ($order_state->add())
+			{
+				// We save the order State ID in Configuration database
+				Configuration::updateValue("PS_OS_ICEPAY_AUTH", $order_state->id);
+
+				// We copy the module logo in order state logo directory
+				if (file_exists(dirname(dirname(dirname(__file__))) . '/img/os/10.gif'))
+				{
+					copy(dirname(dirname(dirname(__file__))) . '/img/os/10.gif', dirname(dirname(dirname(__file__))) . '/img/os/' . $order_state->id . '.gif');
+				}
+//				copy(dirname(__FILE__).'/logo.gif', dirname(__FILE__).'/../../img/os/'.$order_state->id.'.gif'); //TODO
+//				copy(dirname(__FILE__).'/logo.gif', dirname(__FILE__).'/../../img/tmp/order_state_mini_'.$order_state->id.'.gif');
+			}
+			else
+				return false;
+		}
+		return true;
+	}
+
+
+
+//		public function setMedia()
+//	{
+//		// We call the parent method
+//		parent::setMedia();
+//
+//		// Save the module path in a variable
+//		$this->path = __PS_BASE_URI__.'modules/icepay/';
+//
+//		// Include the module CSS and JS files needed
+//		$this->context->controller->addCSS($this->path.'views/css/star-rating.css', 'all');
+//	}
 
 	private function checkModuleRequirements()
 	{
-		$this->_errors = array();
+		$this->_errors = array(); //TODO
 
 		if (!\Icepay\API\Icepay_Parameter_Validation::merchantID($this->merchantID) || !\Icepay\API\Icepay_Parameter_Validation::secretCode($this->secretCode))
 		{
-			$this->_errors['merchantERR'] = $this->l('To configurate payment methods we need to know the mentatory fields in the configuration above');
+			$this->_errors['merchantERR'] = $this->l('To configure payment methods we need to know the mandatory fields in the configuration above');
 		}
 	}
 
@@ -313,25 +284,12 @@ class Icepay extends PaymentModule
 		$this->cDescription = Configuration::get('ICEPAY_DESCRIPTION');
 	}
 
-	private function _getGitHubReleases()
+	private function deleteModuleSettings()
 	{
-		if (@file_get_contents('https://github.com/icepay/Prestashop/releases.atom') === FALSE)
-		{
-			return '';
-		}
-		else
-		{
-			$xml = new SimpleXMLElement(@file_get_contents('https://github.com/icepay/Prestashop/releases.atom'));
-
-			if (!empty($xml) && isset($xml->entry, $xml->entry[0], $xml->entry[0]->id))
-			{
-				if (!version_compare($this->version, preg_replace("/[^0-9,.]/", "", substr($xml->entry[0]->id, strrpos($xml->entry[0]->id, '/'))), '>='))
-				{
-					return $this->l('A newer version of our payment module is available');
-				}
-			}
-		}
-
-		return '';
+		Configuration::deleteByName('ICEPAY_MERCHANTID');
+		Configuration::deleteByName('ICEPAY_TESTPREFIX');
+		Configuration::deleteByName('ICEPAY_SECRETCODE');
+		Configuration::deleteByName('ICEPAY_DESCRIPTION');
 	}
+
 }
