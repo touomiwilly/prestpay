@@ -3,7 +3,7 @@
 /**
  * ICEPAY REST API for PHP
  *
- * @version     0.0.1
+ * @version     0.0.2
  * @authors     Ricardo Jacobs <ricardozegt@gmail.com>
  * @license     BSD-2-Clause, see LICENSE.md
  * @copyright   (c) 2015, ICEPAY B.V. All rights reserved.
@@ -37,17 +37,6 @@ class BaseApi
     }
 
     /**
-     * Generates a checksum to sign the message
-     *
-     * @param $string
-     * @return string
-     */
-    public function generateChecksum($string)
-    {
-        return hash('sha256', utf8_encode($string));
-    }
-
-    /**
      * Get the customers IP Address
      *
      * @return string
@@ -60,6 +49,8 @@ class BaseApi
                     getenv('HTTP_FORWARDED_FOR') ?:
                         getenv('HTTP_FORWARDED') ?:
                             getenv('REMOTE_ADDR');
+			    
+	//Try to get client IP from SERVER variables
         if(!$ipaddress)
         {
             return $this->getClientIpFromServerVar();

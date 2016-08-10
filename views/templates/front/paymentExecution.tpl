@@ -36,28 +36,13 @@
                 {/if}
             </p>
             <p>
-                -
-                {if $currencies|@count > 1}
-                {l s='We allow several currencies to be sent via MyMod Payment:' mod='icepay'}
-            <div class="form-group">
-                <label>{l s='Choose one of the following:' mod='icepay'}</label>
-                <select id="currency_payment" class="form-control" name="currency_payment">
-                    {foreach from=$currencies item=currency}
-                        <option value="{$currency.id_currency}" {if $currency.id_currency == $cart_currency}selected="selected"{/if}>
-                            {$currency.name}
-                        </option>
-                    {/foreach}
-                </select>
-            </div>
-            {else}
-            {l s='We allow the following currency to be sent via ' mod='icepay'} {$displayname} {l s='payment.' mod='icepay'} &nbsp;<b>{$currencies.0.name}</b>
-            <input type="hidden" name="currency_payment" value="{$currencies.0.id_currency}" />
-            {/if}
-            </p>
-            <p>
-                - {l s='You will be redirected to ICEPAY ...' mod='icepay'}
+                - {l s='You will be redirected to ICEPAY payment service provider' mod='icepay'}
                 <br />
-                - {l s='Please select issuer and confirm your order by clicking "I confirm my order."' mod='icepay'}.
+                {if $issuerList|@count > 1}
+                - {l s='Please select issuer and confirm your order by clicking "I confirm my order"' mod='icepay'}
+                {/if}
+
+
             </p>
         </div><!-- .cheque-box -->
 

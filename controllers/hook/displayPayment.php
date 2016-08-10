@@ -24,6 +24,9 @@ class IcepayDisplayPaymentController
 		$currency = Currency::getCurrency($cart->id_currency);
 		$storedPaymentMethod = Db::getInstance()->executeS("SELECT raw_pm_data FROM `{$this->module->dbRawData}` WHERE `id_shop` = $activeShopID");
 
+		if(empty($storedPaymentMethod))
+			return;
+
 		$filter = new Icepay_Webservice_Filtering();
 		$filter->loadFromArray(unserialize($storedPaymentMethod[0]['raw_pm_data']));
 		$filter->filterByCurrency($currency['iso_code'])->filterByCountry($this->context->country->iso_code)->filterByAmount($cart->getOrderTotal(true, Cart::BOTH) * 100);

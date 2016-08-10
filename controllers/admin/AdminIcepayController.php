@@ -61,8 +61,6 @@ class AdminIcepayController extends ModuleAdminController
 
         // Define meta and toolbar title
         $this->meta_title = $this->l('Payment Methods');
-//        if (Tools::getIsset('viewmymod_comment'))
-//            $this->meta_title = $this->l('View comment').' #'. Tools::getValue('id_mymod_comment');
         $this->toolbar_title[] = $this->meta_title;
     }
 
@@ -117,6 +115,14 @@ class AdminIcepayController extends ModuleAdminController
     public function renderList(){
 
         $output = '';
+
+        if ($this->context->shop->getContext() == Shop::CONTEXT_GROUP) {
+            $message = $this->module->l('Payment method editing for shop groups is not supported');
+            $tpl = $this->context->smarty->createTemplate(dirname(__FILE__). '/../../views/templates/admin/warning.tpl');
+            $tpl->assign('warningmessage', $message);
+            return $tpl->fetch();
+        }
+
         //Show massage to help users with module configuration
         if (!IcepayPaymentMethod::checkPaymentMethodsDefined((int)Context::getContext()->shop->id)) {
 

@@ -3,7 +3,7 @@
 /**
  * ICEPAY REST API for PHP
  *
- * @version     0.0.1
+ * @version     0.0.2
  * @authors     Ricardo Jacobs <ricardozegt@gmail.com>
  * @license     BSD-2-Clause, see LICENSE.md
  * @copyright   (c) 2015, ICEPAY B.V. All rights reserved.
@@ -39,7 +39,7 @@ class Payment extends BaseApi
         /**
          * Generate the checksum for the request
          */
-        $checksum = $this->generateChecksum(
+        $checksum = $this->client->generateChecksum(
             $this->client->api_endpoint .
             'payment/checkout' .
             $this->client->api_post .
@@ -83,7 +83,7 @@ class Payment extends BaseApi
         /**
          * Generate the checksum for the request
          */
-        $checksum = $this->generateChecksum(
+        $checksum = $this->client->generateChecksum(
             $this->client->api_endpoint .
             'payment/vaultcheckout' .
             $this->client->api_post .
@@ -127,7 +127,7 @@ class Payment extends BaseApi
         /**
          * Generate the checksum for the request
          */
-        $checksum = $this->generateChecksum(
+        $checksum = $this->client->generateChecksum(
             $this->client->api_endpoint .
             'payment/automaticcheckout' .
             $this->client->api_post .
@@ -157,7 +157,7 @@ class Payment extends BaseApi
         /**
          * Generate the checksum for the request
          */
-        $checksum = $this->generateChecksum(
+        $checksum = $this->client->generateChecksum(
             $this->client->api_endpoint .
             'payment/getmypaymentmethods' .
             $this->client->api_post .
@@ -189,7 +189,7 @@ class Payment extends BaseApi
         /**
          * Generate the checksum for the request
          */
-        $checksum = $this->generateChecksum(
+        $checksum = $this->client->generateChecksum(
             $this->client->api_endpoint .
             'payment/getpayment' .
             $this->client->api_post .

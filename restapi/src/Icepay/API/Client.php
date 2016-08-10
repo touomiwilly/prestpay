@@ -3,7 +3,7 @@
 /**
  * ICEPAY REST API for PHP
  *
- * @version     0.0.1
+ * @version     0.0.2
  * @authors     Ricardo Jacobs <ricardozegt@gmail.com>
  * @license     BSD-2-Clause, see LICENSE.md
  * @copyright   (c) 2015, ICEPAY B.V. All rights reserved.
@@ -16,6 +16,7 @@ class Client
 {
 
     private static $instance;
+    
     /**
      * @var $ch
      */
@@ -49,7 +50,7 @@ class Client
     /**
      * @var $api_version string
      */
-    public $api_version = '0.0.1';
+    private $api_version = '0.0.2';
 
     public function getReleaseVersion()
     {
@@ -224,7 +225,7 @@ class Client
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, TRUE);
 
-          /**
+        /**
          * Execute the request
          */
         $response = curl_exec($this->ch);
@@ -238,11 +239,12 @@ class Client
             $response = curl_exec($this->ch);
         }
 
-        /**
-         * Verifying peer certificate fails on OpenSSL 0.9 or earlier.
-         * We done all we could to check the certificate on the host.
-         * This webserver simply will not accept it and we need to connect.
-         */
+//        /**
+//         * Verifying peer certificate fails on OpenSSL 0.9 or earlier.
+//         * We done all we could to check the certificate on the host.
+//         * This webserver simply will not accept it and we need to connect.
+//         */
+//        Uncommenting this code block can be insecure, use at your own risk
         if (strpos(curl_error($this->ch), 'certificate subject name') !== FALSE) {
             curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, 0);
 
@@ -282,7 +284,8 @@ class Client
         }
 
         /**
-         * Verify response checksum. If it does not match, throw an exception
+         * Verify response checksum. If it does not match, throw an exception.
+         * Always require presence of a checksum header.
          */
         $parsed_headers = $this->parse_headers($response_header);
         if (isset($parsed_headers[0]["Checksum"])) {
@@ -297,6 +300,11 @@ class Client
             if ($checksumVerification != $parsed_headers[0]["Checksum"]) {
                 throw new \Exception("Response checksum invalid");
             }
+        }
+        else
+        {
+            //if no checksum header was present in the response, the most likely cause is that the sender ID was invalid
+            throw new \Exception("Response checksum not found. Verify your merchant ID.");
         }
 
         /**

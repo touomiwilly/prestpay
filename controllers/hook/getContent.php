@@ -169,7 +169,10 @@ class IcepayGetContentController
         $html_confirmation_message = $this->module->display($this->file, 'getContent.tpl');
         $html_form = $this->renderForms();
 
-        $html_list = $this->initList();
+        $html_list = '';
+        if ($this->context->shop->getContext() != Shop::CONTEXT_GROUP) {
+            $html_list = $this->initList();
+        }
         return $html_confirmation_message . $html_form . $html_list;
     }
 

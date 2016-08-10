@@ -233,27 +233,19 @@ class Icepay_Webservice_Pay extends Icepay_Webservice_Base {
         $obj->URLError = $this->getErrorURL();
 
         // ------------------------------------------------
-        $obj->Checksum = $this->generateChecksum($obj, $this->getSecretCode());
 
         $result = $this->client->payment->Checkout((Array)$obj);
 
-        /* store the checksum momentarily */
 		if (!isset($result->Checksum)) {
-			throw new Exception("Error creating the order");
+
+            $message = "Error creating the order";
+            if (isset($result->Checksum) && 0 === strpos($result->Message, 'ERR_'))
+            {
+                $message .= ": ".$result->Message;
+            }
+
+			throw new Exception($message);
 		}
-		$checksum = $result->Checksum;
-		
-        /* Replace the checksum in the data with secretCode to generate a new checksum */
-        $result->Checksum = $this->getSecretCode();
-
-        /* Verify response data */
-        if ($checksum != $this->generateChecksum($result)) {
-			//TODO: validate checkcsum
-            //throw new Exception("Data could not be verified");
-        }
-
-        /* Return mister checksum */
-        $result->Checksum = $checksum;
 
         /* Return just the payment URL if required */
         if ($getUrlOnly)

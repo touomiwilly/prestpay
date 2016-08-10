@@ -3,7 +3,7 @@
 /**
  * ICEPAY REST API for PHP
  *
- * @version     0.0.1
+ * @version     0.0.2
  * @authors     Ricardo Jacobs <ricardozegt@gmail.com>
  * @license     BSD-2-Clause, see LICENSE.md
  * @copyright   (c) 2015, ICEPAY B.V. All rights reserved.
@@ -30,7 +30,7 @@ class Refund extends BaseApi
         /**
          * Generate the checksum for the request
          */
-        $checksum = $this->generateChecksum(
+        $checksum = $this->client->generateChecksum(
             $this->client->api_endpoint .
             'refund/requestrefund' .
             $this->client->api_post .
@@ -63,7 +63,7 @@ class Refund extends BaseApi
         /**
          * Generate the checksum for the request
          */
-        $checksum = $this->generateChecksum(
+        $checksum = $this->client->generateChecksum(
             $this->client->api_endpoint .
             'refund/cancelrefund' .
             $this->client->api_post .
@@ -95,7 +95,7 @@ class Refund extends BaseApi
         /**
          * Generate the checksum for the request
          */
-        $checksum = $this->generateChecksum(
+        $checksum = $this->client->generateChecksum(
             $this->client->api_endpoint .
             'refund/getpaymentrefunds' .
             $this->client->api_post .
