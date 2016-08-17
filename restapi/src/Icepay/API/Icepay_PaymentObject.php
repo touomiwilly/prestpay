@@ -1,9 +1,11 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: isgn
- * Date: 12.11.2015
- * Time: 14:33
+ * ICEPAY REST API for PHP
+ *
+ * @version     0.0.2 Prestashop
+ * @license     BSD-2-Clause, see LICENSE.md
+ * @copyright   (c) 2016, ICEPAY B.V. All rights reserved.
  */
 
  class Icepay_PaymentObject implements Icepay_PaymentObject_Interface_Abstract {
@@ -95,7 +97,7 @@
     public function setCountry($country)
     {
         $country = strtoupper($country);
-        if (!\Icepay\API\Icepay_Parameter_Validation::country($country))
+        if (!Icepay_Parameter_Validation::country($country))
             throw new Exception('Country not valid');
         $this->data->ic_country = $country;
         return $this;
@@ -123,7 +125,7 @@
      */
     public function setLanguage($lang)
     {
-        if (!\Icepay\API\Icepay_Parameter_Validation::language($lang))
+        if (!Icepay_Parameter_Validation::language($lang))
             throw new Exception('Language not valid');
         $this->data->ic_language = $lang;
         return $this;
@@ -139,7 +141,7 @@
     {
         $amount = (int) (string) $amount;
 
-        if (!\Icepay\API\Icepay_Parameter_Validation::amount($amount))
+        if (!Icepay_Parameter_Validation::amount($amount))
             throw new Exception('Amount not valid');
         $this->data->ic_amount = $amount;
         return $this;

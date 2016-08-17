@@ -1,18 +1,17 @@
-<?php namespace Icepay\API;
+<?php
 
 /**
  * ICEPAY REST API for PHP
  *
- * @version     0.0.2
- * @authors     Ricardo Jacobs <ricardozegt@gmail.com>
+ * @version     0.0.2 Prestashop
  * @license     BSD-2-Clause, see LICENSE.md
- * @copyright   (c) 2015, ICEPAY B.V. All rights reserved.
+ * @copyright   (c) 2016, ICEPAY B.V. All rights reserved.
  */
 
-use Icepay\API\Resources\Payment;
-use Icepay\API\Resources\Refund;
+require_once(dirname(__FILE__).'/Resources/Payment.php');
+require_once(dirname(__FILE__).'/Resources/Refund.php');
 
-class Client
+class Icepay_Client
 {
 
     private static $instance;
@@ -126,8 +125,8 @@ class Client
      */
     public function __construct()
     {
-        $this->payment = new Payment($this);
-        $this->refund = new Refund($this);
+        $this->payment = new Icepay_Payment($this);
+        $this->refund = new Icepay_Refund($this);
     }
 
     /**
@@ -139,7 +138,7 @@ class Client
      * @param $checksum
      *
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     public function request($method, $api_method, $body = NULL, $checksum)
     {
@@ -147,28 +146,28 @@ class Client
          * Check if the Merchant ID is set
          */
         if (empty($this->api_key)) {
-            throw new \Exception("Please configure your ICEPAY Merchant ID.");
+            throw new Exception("Please configure your ICEPAY Merchant ID.");
         }
 
         /**
          * Check if the Secret Code is set
          */
         if (empty($this->api_secret)) {
-            throw new \Exception("Please configure your ICEPAY Secret Code.");
+            throw new Exception("Please configure your ICEPAY Secret Code.");
         }
 
         /**
          * Check if the CompletedURL is set
          */
         if (empty($this->api_completed_url)) {
-            throw new \Exception("Please configure your setCompletedURL()");
+            throw new Exception("Please configure your setCompletedURL()");
         }
 
         /**
          * Check if the ErrorURL is set
          */
         if (empty($this->api_error_url)) {
-            throw new \Exception("Please configure your setErrorURL()");
+            throw new Exception("Please configure your setErrorURL()");
         }
 
         /**
@@ -262,7 +261,7 @@ class Client
             curl_close($this->ch);
             $this->ch = NULL;
 
-            throw new \Exception('Unable to reach the ICEPAY payment server (' . $exception_no . '):' . $exception);
+            throw new Exception('Unable to reach the ICEPAY payment server (' . $exception_no . '):' . $exception);
         }
 
         /**
@@ -298,13 +297,13 @@ class Client
                 $response_body
             );
             if ($checksumVerification != $parsed_headers[0]["Checksum"]) {
-                throw new \Exception("Response checksum invalid");
+                throw new Exception("Response checksum invalid");
             }
         }
         else
         {
             //if no checksum header was present in the response, the most likely cause is that the sender ID was invalid
-            throw new \Exception("Response checksum not found. Verify your merchant ID.");
+            throw new Exception("Response checksum not found. Verify your merchant ID.");
         }
 
         /**

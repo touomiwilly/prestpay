@@ -1,9 +1,11 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: isgn
- * Date: 12.11.2015
- * Time: 14:46
+ * ICEPAY REST API for PHP
+ *
+ * @version     0.0.2 Prestashop
+ * @license     BSD-2-Clause, see LICENSE.md
+ * @copyright   (c) 2016, ICEPAY B.V. All rights reserved.
  */
 
  class Icepay_Api_Base {
@@ -63,7 +65,7 @@
      */
     public function setMerchantID($merchantID)
     {
-        if (!\Icepay\API\Icepay_Parameter_Validation::merchantID($merchantID))
+        if (!Icepay_Parameter_Validation::merchantID($merchantID))
             throw new Exception('MerchantID not valid');
 
         $this->_merchantID = (int) $merchantID;
@@ -90,7 +92,7 @@
      */
     public function setSecretCode($secretCode)
     {
-        if (!\Icepay\API\Icepay_Parameter_Validation::secretCode($secretCode))
+        if (!Icepay_Parameter_Validation::secretCode($secretCode))
             throw new Exception('Secretcode not valid');
 
         $this->_secretCode = (string) $secretCode;
@@ -116,7 +118,7 @@
      */
     public function setPinCode($pinCode)
     {
-        if (!\Icepay\API\Icepay_Parameter_Validation::pinCode($pinCode))
+        if (!Icepay_Parameter_Validation::pinCode($pinCode))
             throw new Exception('Pincode not valid');
 
         $this->_pinCode = (string) $pinCode;

@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * ICEPAY REST API for PHP
+ *
+ * @version     0.0.2 Prestashop
+ * @license     BSD-2-Clause, see LICENSE.md
+ * @copyright   (c) 2016, ICEPAY B.V. All rights reserved.
+ */
+
 class Icepay_Postback extends Icepay_Api_Base {
 
     public function __construct()
@@ -168,12 +176,12 @@ class Icepay_Postback extends Icepay_Api_Base {
         if ($this->isVersionCheck())
             return false;
 
-        if (!\Icepay\API\Icepay_Parameter_Validation::merchantID($this->data->merchant)) {
+        if (!Icepay_Parameter_Validation::merchantID($this->data->merchant)) {
             $this->_logger->log("Merchant ID is not numeric: {$this->data->merchant}", Icepay_Api_Logger::ERROR);
             return false;
         }
 
-        if (!\Icepay\API\Icepay_Parameter_Validation::amount($this->data->amount)) {
+        if (!Icepay_Parameter_Validation::amount($this->data->amount)) {
             $this->_logger->log("Amount is not numeric: {$this->data->amount}", Icepay_Api_Logger::ERROR);
             return false;
         }

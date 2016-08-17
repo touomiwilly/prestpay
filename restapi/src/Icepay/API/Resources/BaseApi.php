@@ -1,27 +1,26 @@
-<?php namespace Icepay\API\Resources;
+<?php
 
 /**
  * ICEPAY REST API for PHP
  *
- * @version     0.0.2
- * @authors     Ricardo Jacobs <ricardozegt@gmail.com>
+ * @version     0.0.2 Prestashop
  * @license     BSD-2-Clause, see LICENSE.md
- * @copyright   (c) 2015, ICEPAY B.V. All rights reserved.
+ * @copyright   (c) 2016, ICEPAY B.V. All rights reserved.
  */
 
-use Icepay\API\Client;
+require_once(dirname(__FILE__).'/../Client.php');
 
-class BaseApi
+class Icepay_BaseApi
 {
     /**
-     * @var Client
+     * @var Icepay_Client
      */
     public $client;
 
     /**
-     * @param Client $client
+     * @param Icepay_Client $client
      */
-    public function __construct(Client $client)
+    public function __construct(Icepay_Client $client)
     {
         $this->client = $client;
     }

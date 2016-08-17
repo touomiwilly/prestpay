@@ -26,7 +26,7 @@ class Icepay extends PaymentModule
 	{
 		$this->name                   = 'icepay';
 		$this->tab                    = 'payments_gateways';
-		$this->version                = '2.2.0';
+		$this->version                = '2.2.0 beta 2';
 		$this->author                 = 'ICEPAY B.V.';
 		$this->need_instance          = 1;
 		$this->bootstrap              = true;
@@ -251,25 +251,11 @@ class Icepay extends PaymentModule
 		return true;
 	}
 
-
-
-//		public function setMedia()
-//	{
-//		// We call the parent method
-//		parent::setMedia();
-//
-//		// Save the module path in a variable
-//		$this->path = __PS_BASE_URI__.'modules/icepay/';
-//
-//		// Include the module CSS and JS files needed
-//		$this->context->controller->addCSS($this->path.'views/css/star-rating.css', 'all');
-//	}
-
 	private function checkModuleRequirements()
 	{
 		$this->_errors = array(); //TODO
 
-		if (!\Icepay\API\Icepay_Parameter_Validation::merchantID($this->merchantID) || !\Icepay\API\Icepay_Parameter_Validation::secretCode($this->secretCode))
+		if (!Icepay_Parameter_Validation::merchantID($this->merchantID) || !Icepay_Parameter_Validation::secretCode($this->secretCode))
 		{
 			$this->_errors['merchantERR'] = $this->l('To configure payment methods we need to know the mandatory fields in the configuration above');
 		}

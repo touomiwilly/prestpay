@@ -1,15 +1,16 @@
-<?php namespace Icepay\API\Resources;
+<?php
 
 /**
  * ICEPAY REST API for PHP
  *
- * @version     0.0.2
- * @authors     Ricardo Jacobs <ricardozegt@gmail.com>
+ * @version     0.0.2 Prestashop
  * @license     BSD-2-Clause, see LICENSE.md
- * @copyright   (c) 2015, ICEPAY B.V. All rights reserved.
+ * @copyright   (c) 2016, ICEPAY B.V. All rights reserved.
  */
 
-class Refund extends BaseApi
+require_once(dirname(__FILE__).'/BaseApi.php');
+
+class Icepay_Refund extends Icepay_BaseApi
 {
     /**
      * @param $data

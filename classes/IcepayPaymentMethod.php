@@ -37,7 +37,7 @@ class IcepayPaymentMethod extends ObjectModel
         $shopId = pSQL($shopId);
 
         try {
-            $icepay = new \Icepay\API\Client();
+            $icepay = new Icepay_Client();
             $icepay->setApiSecret($secretCode);
             $icepay->setApiKey($merchantId);
             $icepay->setCompletedURL('...');

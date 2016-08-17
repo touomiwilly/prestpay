@@ -1,11 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: isgn
- * Date: 12.11.2015
- * Time: 14:46
- */
 
+/**
+ * ICEPAY REST API for PHP
+ *
+ * @version     0.0.2 Prestashop
+ * @license     BSD-2-Clause, see LICENSE.md
+ * @copyright   (c) 2016, ICEPAY B.V. All rights reserved.
+ */
 
  class Icepay_Webservice_Base extends Icepay_Api_Base {
 
@@ -26,7 +27,7 @@
             return $this;
 
         /* Start a new client */
-        $this->client = new Icepay\API\Client();
+        $this->client = new Icepay_Client();
         $this->client->setApiSecret($this->_secretCode);
         $this->client->setApiKey($this->_merchantID);
         $this->client->setCompletedURL($this->data->ic_urlcompleted);
