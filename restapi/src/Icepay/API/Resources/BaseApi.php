@@ -42,11 +42,11 @@ class Icepay_BaseApi
      */
     public function getClientIp()
     {
-        $ipaddress = getenv('HTTP_CLIENT_IP') ?:
-            getenv('HTTP_X_FORWARDED_FOR') ?:
-                getenv('HTTP_X_FORWARDED') ?:
-                    getenv('HTTP_FORWARDED_FOR') ?:
-                        getenv('HTTP_FORWARDED') ?:
+        $ipaddress = getenv('HTTP_CLIENT_IP') ? getenv('HTTP_CLIENT_IP') :
+            getenv('HTTP_X_FORWARDED_FOR') ? getenv('HTTP_X_FORWARDED_FOR') :
+                getenv('HTTP_X_FORWARDED') ? getenv('HTTP_X_FORWARDED') :
+                    getenv('HTTP_FORWARDED_FOR') ? getenv('HTTP_FORWARDED_FOR') :
+                        getenv('HTTP_FORWARDED') ? getenv('HTTP_FORWARDED') :
                             getenv('REMOTE_ADDR');
 			    
 	//Try to get client IP from SERVER variables
