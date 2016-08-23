@@ -189,7 +189,7 @@ class Icepay extends PaymentModule
 				else
 					$order_state->name[(int)$language['id_lang']] = 'Awaiting payment';
 			$order_state->invoice     = false;
-			$order_state->send_email  = true;
+			$order_state->send_email  = false;
 			$order_state->module_name = $this->name;
 			$order_state->color       = "RoyalBlue";
 			$order_state->unremovable = true;
@@ -199,7 +199,7 @@ class Icepay extends PaymentModule
 			$order_state->shipped     = false;
 			$order_state->paid        = false;
 			$order_state->deleted     = false;
-			$order_state->template    = "order_changed";
+			//$order_state->template    = "order_changed";
 
 			if ($order_state->add())
 			{
@@ -231,7 +231,7 @@ class Icepay extends PaymentModule
 				$order_state->name[(int)$language['id_lang']] = 'Payment Authorized';
 			}
 			$order_state->invoice     = false;
-			$order_state->send_email  = true;
+			$order_state->send_email  = false;
 			$order_state->module_name = $this->name;
 			$order_state->color       = "RoyalBlue";
 			$order_state->unremovable = true;
@@ -241,7 +241,7 @@ class Icepay extends PaymentModule
 			$order_state->shipped     = false;
 			$order_state->paid        = false;
 			$order_state->deleted     = false;
-			$order_state->template    = "order_changed";
+			//$order_state->template    = "order_changed";
 
 			if ($order_state->add())
 			{
