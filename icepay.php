@@ -181,8 +181,13 @@ class Icepay extends PaymentModule
 	{
 		if (Configuration::get('PS_OS_ICEPAY_OPEN') < 1)
 		{
-			$order_state              = new OrderState(null, Configuration::get('PS_LANG_DEFAULT'));
-			$order_state->name        = "Awaiting payment";
+			$order_state              = new OrderState();
+			$order_state->name = array();
+			foreach (Language::getLanguages(false) as $language)
+				if (Tools::strtolower($language['iso_code']) == 'nl')
+					$order_state->name[(int)$language['id_lang']] = 'In afwachting van betaling';
+				else
+					$order_state->name[(int)$language['id_lang']] = 'Awaiting payment';
 			$order_state->invoice     = false;
 			$order_state->send_email  = true;
 			$order_state->module_name = $this->name;
@@ -217,8 +222,14 @@ class Icepay extends PaymentModule
 	{
 		if (Configuration::get('PS_OS_ICEPAY_AUTH') < 1)
 		{
-			$order_state              = new OrderState(null, Configuration::get('PS_LANG_DEFAULT'));
-			$order_state->name        = "Payment Authorized";
+			$order_state              = new OrderState();
+			$order_state->name = array();
+			foreach (Language::getLanguages(false) as $language) {
+//				if (Tools::strtolower($language['iso_code']) == 'nl')
+//					$order_state->name[(int)$language['id_lang']] = '';
+//				else
+				$order_state->name[(int)$language['id_lang']] = 'Payment Authorized';
+			}
 			$order_state->invoice     = false;
 			$order_state->send_email  = true;
 			$order_state->module_name = $this->name;
