@@ -10,7 +10,7 @@ The master branche may not be stable. See the [release list](https://github.com/
 
 Type       | Value
 ---------- | ------------------
-PrestaShop | 1.6.0.0 - 1.6.1.4
+PrestaShop | 1.6.0.0 - 1.6.1.6
 
 ### License
 
@@ -20,6 +20,7 @@ Our module is available under the BSD-2-Clause. See the [LICENSE](https://github
 
 Version      | Release date   | Changes
 ------------ | -------------- | -------------------------------------
+2.2.0 beta 3 | 05/09/2016     | Dutch transnslations added
 2.2.0 beta 2 | 18/08/2016     | BugFix: Autoloader conflicting with other modules using the same calss name. Compatibility with PHP 5.2 (namespaces removed)
 2.2.0 beta 1 | 11/08/2016     | REST API version
 2.1.2        | 23/09/2015     | On some hosts, check for new updates results in a error.

@@ -26,12 +26,12 @@ class Icepay extends PaymentModule
 	{
 		$this->name                   = 'icepay';
 		$this->tab                    = 'payments_gateways';
-		$this->version                = '2.2.0 beta 2';
+		$this->version                = '2.2.0 beta 3';
 		$this->author                 = 'ICEPAY B.V.';
 		$this->need_instance          = 1;
 		$this->bootstrap              = true;
 	//	$this->controllers            = array('payment', 'validation');
-		$this->ps_versions_compliancy = array('min' => '1.5', 'max' => '1.6');
+		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => '1.6');
 
 		parent::__construct();
 

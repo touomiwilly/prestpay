@@ -127,7 +127,7 @@ class AdminIcepayController extends ModuleAdminController
         if (!IcepayPaymentMethod::checkPaymentMethodsDefined((int)Context::getContext()->shop->id)) {
 
             $link = $this->context->link->getAdminLink('AdminModules', true).'&configure='.$this->module->name.'&tab_module='.$this->module->tab.'&module_name='.$this->module->name;
-            $message = $this->module->l('Payment methods ar not configured yet. Please synchronise available payment methods in module configuration ').'<a href="'.$link.'">'.$this->module->l('page').'</a>.';
+            $message = $this->module->l('Payment methods are not configured yet. Please synchronize available payment methods in module configuration ').'<a href="'.$link.'">'.$this->module->l('page').'</a>.';
             $tpl = $this->context->smarty->createTemplate(dirname(__FILE__). '/../../views/templates/admin/warning.tpl');
             $tpl->assign('warningmessage', $message);
             $output = $tpl->fetch();

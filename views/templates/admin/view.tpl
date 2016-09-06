@@ -1,7 +1,7 @@
 <fieldset>
     <div class="panel">
         <div class="panel-heading">
-            <legend><i class="icon-info"></i> {l s='Comment on product' mod='icepay'}</legend>
+            <legend><i class="icon-info"></i> {l s='Payment Method' mod='icepay'}</legend>
         </div>
         <div class="form-group clearfix">
             <label class="col-lg-3">{l s='Name:' mod='icepay'}</label>
