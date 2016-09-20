@@ -153,7 +153,7 @@ class AdminIcepayController extends ModuleAdminController
         $module_action = Tools::getValue('module_action');
 
         if (isset($actions_list[$module_action]))
-            $this->$actions_list[$module_action]();
+            $this->{$actions_list[$module_action]}();
 
         parent::initContent();
 
