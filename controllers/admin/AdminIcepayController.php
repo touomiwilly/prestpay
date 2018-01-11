@@ -1,11 +1,17 @@
 <?php
 
+/**
+ * @package       ICEPAY Payment Module for Prestashop
+ * @copyright     (c) 2016-2018 ICEPAY. All rights reserved.
+ * @license       BSD 2 License, see https://github.com/ICEPAYdev/Prestashop/blob/master/LICENSE.md
+ */
+
+
 class AdminIcepayController extends ModuleAdminController
 {
     public function __construct()
     {
         // Set variables
-        //        $this->title = 'Payment Methodsx';
         $this->table = 'icepay_pminfo';
         $this->className = 'IcepayPaymentMethod';
         $this->position_identifier = 'position';
@@ -14,6 +20,10 @@ class AdminIcepayController extends ModuleAdminController
         $this->bulk_actions = array();
         $this->shopLinkType = 'shop';
         $this->list_simple_header = true;
+
+        // Call of the parent constructor method
+        parent::__construct();
+
 
         $this->fields_list = array(
             'position' => array('title' => $this->l('Position'), 'position' => 'position', 'align' => 'center', 'class' => 'fixed-width-md'),
@@ -26,7 +36,7 @@ class AdminIcepayController extends ModuleAdminController
         $this->context = Context::getContext();
         $this->context->controller = $this;
         $this->fields_form = array(
-            'legend' => array('title' => $this->l('Add / Edit Payment Method'), 'image' => '../img/admin/contact.gif'), //TODO
+            'legend' => array('title' => $this->l('Add / Edit Payment Method'), 'image' => '../img/admin/edit.gif'),
             'input' => array(
                 array('type' => 'text', 'label' => $this->l('Display Name'), 'name' => 'displayname', 'size' => 30, 'required' => true),
                 array('type' => 'switch', 'label' => $this->l('Active'), 'name' => 'active', 'values' => array(
@@ -51,9 +61,6 @@ class AdminIcepayController extends ModuleAdminController
         // Enable bootstrap
         $this->bootstrap = true;
 
-        // Call of the parent constructor method
-        parent::__construct();
-
 
         // Add actions
         $this->addRowAction('view');
@@ -75,8 +82,7 @@ class AdminIcepayController extends ModuleAdminController
     {
         $target = pSQL(Tools::getValue('id_icepay_pminfo'));
 
-        if (!empty($target))
-        {
+        if (!empty($target)) {
             //toggle status
             $query = 'UPDATE `' . $this->module->dbPmInfo . '` SET `active` = 1 - active WHERE `id_icepay_pminfo` = ' . (int)$target;
             if (Db::getInstance()->execute($query)) {
@@ -102,44 +108,40 @@ class AdminIcepayController extends ModuleAdminController
         $secretCode = Configuration::get('ICEPAY_SECRETCODE');
         $activeShopID = (int)Context::getContext()->shop->id;
 
-        if (!empty($merchantId) && !empty($secretCode))
-        {
+        if (!empty($merchantId) && !empty($secretCode)) {
             IcepayPaymentMethod::syncIcepayPaymentMethods($merchantId, $secretCode, $activeShopID);
         }
 
-        Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules', true).'&configure='.$this->module->name.'&tab_module='.$this->module->tab.'&module_name='.$this->module->name);
-
+        Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules', true) . '&configure=' . $this->module->name . '&tab_module=' . $this->module->tab . '&module_name=' . $this->module->name);
     }
 
 
-    public function renderList(){
-
+    public function renderList()
+    {
         $output = '';
 
         if ($this->context->shop->getContext() == Shop::CONTEXT_GROUP) {
             $message = $this->module->l('Payment method editing for shop groups is not supported');
-            $tpl = $this->context->smarty->createTemplate(dirname(__FILE__). '/../../views/templates/admin/warning.tpl');
+            $tpl = $this->context->smarty->createTemplate(dirname(__FILE__) . '/../../views/templates/admin/warning.tpl');
             $tpl->assign('warningmessage', $message);
             return $tpl->fetch();
         }
 
         //Show massage to help users with module configuration
         if (!IcepayPaymentMethod::checkPaymentMethodsDefined((int)Context::getContext()->shop->id)) {
-
-            $link = $this->context->link->getAdminLink('AdminModules', true).'&configure='.$this->module->name.'&tab_module='.$this->module->tab.'&module_name='.$this->module->name;
-            $message = $this->module->l('Payment methods are not configured yet. Please synchronize available payment methods in module configuration ').'<a href="'.$link.'">'.$this->module->l('page').'</a>.';
-            $tpl = $this->context->smarty->createTemplate(dirname(__FILE__). '/../../views/templates/admin/warning.tpl');
+            $link = $this->context->link->getAdminLink('AdminModules', true) . '&configure=' . $this->module->name . '&tab_module=' . $this->module->tab . '&module_name=' . $this->module->name;
+            $message = $this->module->l('Payment methods are not configured yet. Please synchronize available payment methods in module configuration ') . '<a href="' . $link . '">' . $this->module->l('page') . '</a>.';
+            $tpl = $this->context->smarty->createTemplate(dirname(__FILE__) . '/../../views/templates/admin/warning.tpl');
             $tpl->assign('warningmessage', $message);
             $output = $tpl->fetch();
         }
 
-        return $output.parent::renderList();
-
+        return $output . parent::renderList();
     }
 
     public function renderView()
     {
-        $tpl = $this->context->smarty->createTemplate(dirname(__FILE__). '/../../views/templates/admin/view.tpl');
+        $tpl = $this->context->smarty->createTemplate(dirname(__FILE__) . '/../../views/templates/admin/view.tpl');
         $tpl->assign('icepaypaymentmethod', $this->object);
         return $tpl->fetch();
     }
@@ -152,11 +154,11 @@ class AdminIcepayController extends ModuleAdminController
         $actions_list = array('sync' => 'processSyncIcepay');
         $module_action = Tools::getValue('module_action');
 
-        if (isset($actions_list[$module_action]))
+        if (isset($actions_list[$module_action])) {
             $this->{$actions_list[$module_action]}();
+        }
 
         parent::initContent();
-
     }
 
 
@@ -172,31 +174,16 @@ class AdminIcepayController extends ModuleAdminController
             if (isset($pos[2]) && (int)$pos[2] === $id_paymentmethod) {
                 if ($paymentmethod = new IcepayPaymentMethod((int)$pos[2])) {
                     if (isset($position) && $paymentmethod->updatePosition($way, $position)) {
-                        echo 'ok position '.(int)$position.' for payment method '.(int)$pos[1].'\r\n';
+                        echo 'ok position ' . (int)$position . ' for payment method ' . (int)$pos[1] . '\r\n';
                     } else {
-                        echo '{"hasError" : true, "errors" : "Can not update payment method '.(int)$id_paymentmethod.' to position '.(int)$position.' "}';
+                        echo '{"hasError" : true, "errors" : "Can not update payment method ' . (int)$id_paymentmethod . ' to position ' . (int)$position . ' "}';
                     }
                 } else {
-                    echo '{"hasError" : true, "errors" : "This payment method ('.(int)$id_paymentmethod.') can t be loaded"}';
+                    echo '{"hasError" : true, "errors" : "This payment method (' . (int)$id_paymentmethod . ') can t be loaded"}';
                 }
 
                 break;
             }
         }
     }
-
-
-//    public function setMedia()
-//    {
-//        // We call the parent method
-//        parent::setMedia();
-//
-//        // Save the module path in a variable
-//        $this->path = __PS_BASE_URI__.'modules/icepay/';
-//
-//        // Include the module CSS and JS files needed
-//        $this->context->controller->addCSS($this->path.'views/css/admin.css', 'all');
-//
-//
-//    }
 }

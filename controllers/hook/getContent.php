@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @package       ICEPAY Payment Module for Prestashop
+ * @copyright     (c) 2016-2018 ICEPAY. All rights reserved.
+ * @license       BSD 2 License, see https://github.com/ICEPAYdev/Prestashop/blob/master/LICENSE.md
+ */
+
 class IcepayGetContentController
 {
     public function __construct($module, $file, $path)
@@ -31,7 +37,6 @@ class IcepayGetContentController
      */
     public function renderForms()
     {
-
         $general_settings_inputs = array(
             array('name' => 'ICEPAY_MERCHANTID', 'label' => $this->module->l('Merchant ID'), 'type' => 'text', 'required' => 'true'),
             array('name' => 'ICEPAY_SECRETCODE', 'type' => 'text', 'label' => $this->module->l('Secret Code'), 'required' => 'true'),
@@ -150,8 +155,7 @@ class IcepayGetContentController
 
         $output = '';
         //Show warning if module not yet configured
-        if (!IcepayPaymentMethod::checkPaymentMethodsDefined((int)Context::getContext()->shop->id))
-        {
+        if (!IcepayPaymentMethod::checkPaymentMethodsDefined((int)Context::getContext()->shop->id)) {
             $message = $this->module->l('Press sync button to get payment methods available for your account');
             $tpl = $this->context->smarty->createTemplate(dirname(__FILE__) . '/../../views/templates/admin/warning.tpl');
             $tpl->assign('warningmessage', $message);
@@ -159,7 +163,6 @@ class IcepayGetContentController
         }
 
         return $output . $helper->generateList($list, $fields_list);
-
     }
 
 
@@ -175,7 +178,4 @@ class IcepayGetContentController
         }
         return $html_confirmation_message . $html_form . $html_list;
     }
-
-
-
 }
