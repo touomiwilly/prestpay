@@ -2,7 +2,7 @@
 
 ## Payment Module for PrestaShop
 
-Make payments in your PrestaShop webshop possible. Download the special Prestashop webshop module [here](https://github.com/icepay/Prestashop/releases), and you will be able to offer the most frequently used national and international online payment methods.
+Make payments in your PrestaShop webshop possible. Download the special Prestashop webshop module [here](https://github.com/icepay/Prestashop/releases), and you will be able to offer the most frequently used national and international online payment methods. You can find the installation and configyration instruction [here](https://github.com/ICEPAY/Prestashop/wiki).
 
 The master branche may not be stable. See the [release list](https://github.com/icepay/Prestashop/releases) for stable versions of this module.
 
