@@ -6,6 +6,8 @@ Make payments in your PrestaShop webshop possible. Download the special Prestash
 
 The master branche may not be stable. See the [release list](https://github.com/ICEPAY/Prestashop/releases) for stable versions of this module.
 
+Installation and configuration instruction is available [here](https://github.com/ICEPAY/Prestashop/wiki).
+
 ### Requirements
 
 Type       | Value
