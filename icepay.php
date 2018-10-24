@@ -2,8 +2,8 @@
 
 /**
  * @package       ICEPAY Payment Module for Prestashop
- * @copyright     (c) 2016 ICEPAY. All rights reserved.
- * @license       BSD 2 License, see https://github.com/ICEPAYdev/Prestashop/blob/master/LICENSE.md
+ * @copyright     (c) 2016-2018 ICEPAY. All rights reserved.
+ * @license       BSD 2 License, see https://github.com/ICEPAY/Prestashop/blob/master/LICENSE.md
  */
 
 if (!defined('_PS_VERSION_'))
@@ -25,7 +25,7 @@ class Icepay extends PaymentModule
 	{
 		$this->name                   = 'icepay';
 		$this->tab                    = 'payments_gateways';
-		$this->version                = '2.2.0 beta 4';
+		$this->version                = '2.2.1';
 		$this->author                 = 'ICEPAY B.V.';
 		$this->need_instance          = 1;
 		$this->bootstrap              = true;

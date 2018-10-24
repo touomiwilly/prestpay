@@ -4,23 +4,24 @@
 
 Make payments in your PrestaShop webshop possible. Download the special Prestashop webshop module [here](https://github.com/ICEPAYdev/Prestashop/releases), and you will be able to offer the most frequently used national and international online payment methods.
 
-The master branche may not be stable. See the [release list](https://github.com/ICEPAYdev/Prestashop/releases) for stable versions of this module.
+The master branche may not be stable. See the [release list](https://github.com/ICEPAY/Prestashop/releases) for stable versions of this module.
 
 ### Requirements
 
 Type       | Value
 ---------- | ------------------
-PrestaShop | 1.6.0.5 - 1.6.1.7
+PrestaShop | 1.6.0.5 - 1.6.1.22
 
 ### License
 
-Our module is available under the BSD-2-Clause. See the [LICENSE](https://github.com/ICEPAYdev/Prestashop/blob/master/LICENSE.md) file for more information.
+Our module is available under the BSD-2-Clause. See the [LICENSE](https://github.com/ICEPAY/Prestashop/blob/master/LICENSE.md) file for more information.
 
 ### Changelog
 
 Version      | Release date   | Changes
 ------------ | -------------- | -------------------------------------
-2.2.0 beta 4 | 026/09/2016    | PHP 7.0 compatibility issues resolved
+2.2.1        | 24/10/2018     | New payment methods
+2.2.0 beta 4 | 26/09/2016     | PHP 7.0 compatibility issues resolved
 2.2.0 beta 3 | 05/09/2016     | Dutch transnslations added
 2.2.0 beta 2 | 18/08/2016     | BugFix: Autoloader conflicting with other modules using the same calss name. Compatibility with PHP 5.2 (namespaces removed)
 2.2.0 beta 1 | 11/08/2016     | REST API version
