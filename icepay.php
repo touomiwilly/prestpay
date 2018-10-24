@@ -26,7 +26,7 @@ class Icepay extends PaymentModule
     {
         $this->name                   = 'icepay';
         $this->tab                    = 'payments_gateways';
-        $this->version                = '2.3.0a';
+        $this->version                = '2.3.1';
         $this->author                 = 'ICEPAY B.V.';
         $this->need_instance          = 1;
         $this->bootstrap              = true;
