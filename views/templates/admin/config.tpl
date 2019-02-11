@@ -1,8 +1,8 @@
 
 {*
- * @package       ICEPAY Payment Module for Prestashop
- * @copyright     (c) 2016-2018 ICEPAY. All rights reserved.
- * @license       BSD 2 License, see https://github.com/ICEPAYdev/Prestashop/blob/master/LICENSE.md
+ * @package       NGMAREL Payment Module for Prestashop
+ * @copyright     (c) 2016-2018 NGMAREL. All rights reserved.
+ * @license       BSD 2 License, see https://github.com/NGMARELdev/Prestashop/blob/master/LICENSE.md
 *}
 
 
@@ -19,7 +19,7 @@
 
             <div class="panel" id="fieldset_0">
                 <div class="panel-heading">
-                    <i class="icon-cogs"></i> {l s='ICEPAY Payment Module' mod='icepay'}
+                    <i class="icon-cogs"></i> {l s='NGMAREL Payment Module' mod='icepay'}
                 </div>
 
                 <div class="form-wrapper">
@@ -52,7 +52,7 @@
                     <h4 class="hook-title">{l s='Postback URLs' mod='icepay'}</h4>
 
                     <p class="help-block">
-                        {l s='Copy and paste these URLs into your Merchant account at the ICEPAY portal' mod='icepay'}<br /><br />
+                        {l s='Copy and paste these URLs into your Merchant account at the NGMAREL portal' mod='icepay'}<br /><br />
                     </p>
 
                     <div class="form-group">
@@ -233,7 +233,7 @@
                 </label>
 
                 <div class="col-lg-9 ">
-                    {$version} ({l s='with' mod='icepay'} <a href="https://github.com/icepay/icepay/releases" target="_blank">ICEPAY API {$api_version}</a>)
+                    {$version} ({l s='with' mod='icepay'} <a href="https://github.com/icepay/icepay/releases" target="_blank">NGMAREL API {$api_version}</a>)
                 </div>
             </div>
         </div>
