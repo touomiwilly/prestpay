@@ -1,7 +1,7 @@
 {*
- * @package       ICEPAY Payment Module for Prestashop
- * @copyright     (c) 2016-2018 ICEPAY. All rights reserved.
- * @license       BSD 2 License, see https://github.com/ICEPAYdev/Prestashop/blob/master/LICENSE.md
+ * @package       NGMAREL Payment Module for Prestashop
+ * @copyright     (c) 2016-2018 NGMAREL. All rights reserved.
+ * @license       BSD 2 License, see https://github.com/NGMARELdev/Prestashop/blob/master/LICENSE.md
 *}
 
 
